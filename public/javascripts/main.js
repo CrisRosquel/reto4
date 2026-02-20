@@ -52,14 +52,56 @@ function showDashboard() {
     loadGames(); // Cargar juegos inmediatamente
 }
 
+
+// --- LÓGICA DE FAVORITOS (LOCALSTORAGE) ---
+let currentView = 'favorites'; // Por defecto muestra favoritos al entrar
+
+function getFavorites() {
+    // Recupera los IDs guardados o un array vacío si no hay nada
+    const favs = localStorage.getItem('game_favorites');
+    return favs ? JSON.parse(favs) : [];
+}
+
+function toggleFavorite(id) {
+    let favs = getFavorites();
+    if (favs.includes(id)) {
+        // Si ya es favorito, lo quitamos
+        favs = favs.filter(favId => favId !== id);
+    } else {
+        // Si no es favorito, lo añadimos
+        favs.push(id);
+    }
+    // Guardamos en LocalStorage
+    localStorage.setItem('game_favorites', JSON.stringify(favs));
+    loadGames(); // Recargamos la vista
+}
+
+function toggleView(view) {
+    currentView = view;
+    // Cambiar estilos de los botones
+    document.getElementById('btn-view-favs').className = view === 'favorites' ? 'btn btn-primary' : 'btn btn-outline-primary';
+    document.getElementById('btn-view-all').className = view === 'all' ? 'btn btn-primary' : 'btn btn-outline-primary';
+    loadGames();
+}
+
 // --- LÓGICA DE JUEGOS (CRUD) ---
 
 async function loadGames() {
     const platform = document.getElementById('filter-platform').value;
     const status = document.getElementById('filter-status').value;
+    
     const res = await fetch(`/api/games?platform=${platform}&status=${status}&_t=${Date.now()}`);
+    
     if (res.status === 401) return location.reload(); 
-    const games = await res.json();
+    
+    let games = await res.json();
+
+    // NUEVO: Filtrar por favoritos si la vista actual lo requiere
+    if (currentView === 'favorites') {
+        const favs = getFavorites();
+        games = games.filter(game => favs.includes(game.id));
+    }
+
     renderGames(games);
 }
 function renderGames(games) {
@@ -75,8 +117,7 @@ function renderGames(games) {
         return;
     }
 
-    list.innerHTML = games.map(game => {
-        // Colores y badges
+   list.innerHTML = games.map(game => {
         let platClass = 'plat-pc';
         if(game.platform.includes('Play')) platClass = 'plat-ps';
         if(game.platform.includes('Xbox')) platClass = 'plat-xbox';
@@ -87,6 +128,10 @@ function renderGames(games) {
         else if(game.status === 'jugando') statusBadge = '<span class="badge-custom bg-warning text-dark"><i class="bi bi-play-fill"></i> JUGANDO</span>';
         else statusBadge = '<span class="badge-custom bg-secondary text-white"><i class="bi bi-pause-fill"></i> PENDIENTE</span>';
 
+        // NUEVO: Determinar si es favorito para pintar la estrella
+        const isFav = getFavorites().includes(game.id);
+        const starIcon = isFav ? 'bi-star-fill text-warning' : 'bi-star text-secondary';
+
         return `
         <div class="col-md-4 col-sm-6">
             <div class="game-card h-100">
@@ -94,7 +139,12 @@ function renderGames(games) {
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-start mb-3">
                         <span class="badge bg-dark border border-secondary text-light">${game.platform}</span>
-                        ${statusBadge}
+                        <div>
+                            ${statusBadge}
+                            <button class="btn btn-sm btn-link p-0 ms-2" onclick="toggleFavorite(${game.id})">
+                                <i class="bi ${starIcon} fs-5" style="text-shadow: 0 0 5px rgba(255,193,7,0.5);"></i>
+                            </button>
+                        </div>
                     </div>
                     
                     <h4 class="card-title fw-bold text-white mb-1">${game.title}</h4>

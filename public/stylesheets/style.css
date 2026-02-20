@@ -1,8 +1,132 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+:root {
+    --bg-dark: #09090b;      
+    --accent: #8b5cf6;       
+    --accent-hover: #7c3aed;
+    --glass: rgba(255, 255, 255, 0.08); 
+    --border: rgba(255, 255, 255, 0.2); 
 }
 
-a {
-  color: #00B7FF;
+body {
+    background-color: var(--bg-dark);
+    background-image: 
+        radial-gradient(circle at 15% 50%, rgba(139, 92, 246, 0.15), transparent 25%),
+        radial-gradient(circle at 85% 30%, rgba(56, 189, 248, 0.15), transparent 25%);
+    color: #fff; 
+    font-family: 'Poppins', sans-serif;
+    min-height: 100vh;
+}
+
+/* Paneles de Cristal */
+.glass-panel {
+    background: #18181b; 
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+/* Navbar */
+.navbar {
+    background: #18181b !important;
+    border-bottom: 1px solid var(--border);
+}
+.navbar-brand {
+    font-weight: 700;
+    background: -webkit-linear-gradient(0deg, #c084fc, #2dd4bf);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Inputs */
+.form-control, .form-select {
+    background-color: #27272a !important; 
+    border: 1px solid #3f3f46;
+    color: #fff !important; 
+    padding: 10px 15px;
+}
+.form-control::placeholder {
+    color: #a1a1aa; 
+}
+.form-control:focus, .form-select:focus {
+    background-color: #27272a;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 2px rgba(139, 92, 246, 0.3);
+}
+
+label {
+    color: #e4e4e7 !important; 
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+.input-group-text {
+    background-color: #3f3f46;
+    border-color: #3f3f46;
+    color: #fff;
+}
+
+/* Tarjetas de Juegos */
+.game-card {
+    background: #18181b;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    transition: transform 0.2s, border-color 0.2s;
+    overflow: hidden;
+}
+.game-card:hover {
+    transform: translateY(-5px);
+    border-color: var(--accent);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+}
+
+.btn-action {
+    border: 1px solid #52525b;
+    color: #e4e4e7;
+    transition: all 0.2s;
+}
+.btn-action:hover {
+    background: white;
+    color: black;
+}
+.btn-delete:hover {
+    background: #ef4444;
+    border-color: #ef4444;
+    color: white;
+}
+
+.platform-strip { height: 4px; width: 100%; }
+.plat-pc { background: #38bdf8; box-shadow: 0 0 10px #38bdf8; } 
+.plat-ps { background: #60a5fa; box-shadow: 0 0 10px #60a5fa; }
+.plat-xbox { background: #4ade80; box-shadow: 0 0 10px #4ade80; }
+.plat-nintendo { background: #f87171; box-shadow: 0 0 10px #f87171; }
+
+.badge-custom {
+    padding: 5px 10px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.btn-primary {
+    background-color: var(--accent);
+    border: none;
+    color: white;
+    font-weight: 600;
+}
+.btn-primary:hover {
+    background-color: var(--accent-hover);
+    box-shadow: 0 0 15px rgba(139, 92, 246, 0.5);
+}
+
+.hidden { display: none !important; }
+.text-dim { color: #a1a1aa; }
+
+/* Modal */
+.modal-content.glass-panel {
+    background: #18181b; 
+    border: 1px solid var(--border);
+    box-shadow: 0 15px 50px rgba(0,0,0,0.5);
+}
+.modal-backdrop.show {
+    opacity: 0.8; 
+    backdrop-filter: blur(5px); 
 }
